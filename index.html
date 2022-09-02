@@ -71,9 +71,9 @@
                 //result += "faktura: " + daneFaktura + "\n";
                 //result += "zaplata: " + daneZaplata + "\n";
                 //result += "\n";
-                result += "Faktura: \n\tkurs: " + fakturaJson['rates'][0].mid.toFixed(3) + "zł\n\tkwota: " + (fakturaJson['rates'][0].mid * daneKwota).toFixed(2) + "zł\n\tkomórka: " + fakturaJson['rates'][0].no + ", z dnia " + new Date(fakturaJson['rates'][0].effectiveDate).toLocaleDateString() + "\n";
+                result += "Faktura: \n\tKurs: " + fakturaJson['rates'][0].mid.toFixed(4) + "zł\n\tNetto: " + (fakturaJson['rates'][0].mid * daneKwota).toFixed(2) + "zł\n\tVat 23%: " + (fakturaJson['rates'][0].mid * daneKwota * 0.23).toFixed(2) + "zł\n\tBrutto: " + ((fakturaJson['rates'][0].mid * daneKwota * 0.23) + (fakturaJson['rates'][0].mid * daneKwota)).toFixed(2) + "zł\n\tKomórka: " + fakturaJson['rates'][0].no + ", " + new Date(fakturaJson['rates'][0].effectiveDate).toLocaleDateString() + "\n";
                 result += "\n";
-                result += "Zapłata: \n\tkurs: " + zaplataJson['rates'][0].mid.toFixed(3) + "zł\n\tkwota: " + (zaplataJson['rates'][0].mid * daneKwota).toFixed(2) + "zł\n\tkomórka: " + zaplataJson['rates'][0].no + ", z dnia " + new Date(zaplataJson['rates'][0].effectiveDate).toLocaleDateString() + "\n";
+                result += "Zapłata: \n\tKurs: " + zaplataJson['rates'][0].mid.toFixed(4) + "zł\n\tKwota: " + (zaplataJson['rates'][0].mid * daneKwota).toFixed(2) + "zł\n\tKomórka: " + zaplataJson['rates'][0].no + ", " + new Date(zaplataJson['rates'][0].effectiveDate).toLocaleDateString() + "\n";
                 result += "\n";
 
                 var fakturaKwota = fakturaJson['rates'][0].mid * daneKwota;
