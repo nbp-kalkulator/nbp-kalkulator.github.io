@@ -53,12 +53,12 @@
                 var daneZaplata = document.getElementById('zaplataDI').value;
 
                 var fakturaRequest = new XMLHttpRequest();
-                fakturaRequest.open("GET", 'http://api.nbp.pl/api/exchangerates/rates/a/' + daneKurs + '/' + daneFaktura, false);
+                fakturaRequest.open("GET", 'https://api.nbp.pl/api/exchangerates/rates/a/' + daneKurs + '/' + daneFaktura, false);
                 fakturaRequest.send(null);
                 var fakturaJson = JSON.parse(fakturaRequest.responseText);
 
                 var zaplataRequest = new XMLHttpRequest();
-                zaplataRequest.open("GET", 'http://api.nbp.pl/api/exchangerates/rates/a/' + daneKurs + '/' + daneZaplata, false);
+                zaplataRequest.open("GET", 'https://api.nbp.pl/api/exchangerates/rates/a/' + daneKurs + '/' + daneZaplata, false);
                 zaplataRequest.send(null);
                 var zaplataJson = JSON.parse(zaplataRequest.responseText);
 
