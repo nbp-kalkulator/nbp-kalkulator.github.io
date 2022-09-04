@@ -264,12 +264,13 @@
 
         var data = new Date();
 
+        fakturaDI.max = data.toISOString().split("T")[0];
+        zaplataDI.max = data.toISOString().split("T")[0];
+
         data.setDate(data.getDate() - 1);
         while (isWeekend(data)) data.setDate(data.getDate() - 1);
         aktualnaData = data.toISOString().split("T")[0]
-        fakturaDI.max = aktualnaData;
         fakturaDI.value = aktualnaData;
-        zaplataDI.max = aktualnaData;
         zaplataDI.value = aktualnaData;
     </script>
 
