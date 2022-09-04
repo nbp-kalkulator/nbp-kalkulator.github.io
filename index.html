@@ -52,7 +52,16 @@
             padding: 0.6em;
             margin: 0.1em 0;
             text-align: center;
-            text-align-last:center;
+            text-align-last: center;
+        }
+
+        input[type='number'] {
+            -moz-appearance: textfield;
+        }
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
         }
     </style>
     <script>
@@ -109,12 +118,12 @@
 
         function checkDate(e) {
             var data = new Date(document.getElementById(e.target.id).value);
-            
+
             if (!isWeekend(data)) return;
 
             while (isWeekend(data)) data.setDate(data.getDate() - 1);
 
-            document.getElementById(e.target.id).value = data.toISOString().substring(0,10);
+            document.getElementById(e.target.id).value = data.toISOString().substring(0, 10);
 
             alert('Wskazano weekend. Data została zmieniona na ' + data.toISOString().split("T")[0]);
         }
@@ -132,7 +141,7 @@
         <div class="block">
 
             <input class="custom-input" type="text" name="fname" value="PLN" disabled><input class="custom-input"
-                type="text" id="kwota" name="fname" value="100.00"><br>
+                type="number" id="kwota" name="fname" value="100.00"><br>
         </div>
 
         <div class="block">
@@ -232,13 +241,15 @@
         <div class="block">
 
             <input class="custom-input" type="text" name="fname" value="Faktura" disabled><input class="custom-input"
-                type="date" id="fakturaDI" name="trip-start" value="2002-01-02" min="2002-01-02" onblur="checkDate(event);">
+                type="date" id="fakturaDI" name="trip-start" value="2002-01-02" min="2002-01-02"
+                onblur="checkDate(event);">
         </div>
 
         <div class="block">
 
             <input class="custom-input" type="text" name="fname" value="Zapłata" disabled><input class="custom-input"
-                type="date" id="zaplataDI" name="trip-start" value="2002-01-02" min="2002-01-02" onblur="checkDate(event);">
+                type="date" id="zaplataDI" name="trip-start" value="2002-01-02" min="2002-01-02"
+                onblur="checkDate(event);">
         </div>
 
         <div class="block">
@@ -250,9 +261,9 @@
         function isWeekend(date = new Date()) {
             return date.getDay() % 6 === 0;
         }
-        
+
         var data = new Date();
-        
+
         data.setDate(data.getDate() - 1);
         while (isWeekend(data)) data.setDate(data.getDate() - 1);
         aktualnaData = data.toISOString().split("T")[0]
