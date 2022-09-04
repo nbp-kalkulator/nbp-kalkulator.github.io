@@ -2,18 +2,20 @@
 
 <head>
     <title>NBP - Kalkulator</title>
+
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="notiflix-3.2.5.min.css" />
+
+    <script src="notiflix-3.2.5.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <style>
         body {
             font-family: 'Lato';
 
-            color: white;
-
-            background-color: rgb(28, 109, 60);
+            background-color: #1c6d3c;
         }
 
         .block {
@@ -21,31 +23,42 @@
         }
 
         .small-font {
-            font-size: 0.8em;
+            font-size: 0.9em;
         }
 
         .big-font {
-            font-size: 1.6em;
+            font-size: 1.8em;
         }
 
         .custom-input {
-            width: 16em;
+            width: 8.5em;
             font-family: 'Lato';
             margin-top: 0.4em;
         }
 
         #content {
-            width: 16em;
+            width: 17em;
             position: absolute;
             left: 50%;
             top: 50%;
             -webkit-transform: translate(-50%, -50%);
             transform: translate(-50%, -50%);
+
+            color: white;
+        }
+
+        input,
+        select {
+            padding: 0.6em;
+            margin: 0.1em 0;
+            text-align: center;
         }
     </style>
     <script>
         function oblicz() {
-
+            Notiflix.Loading.standard('pobieranie danych z api.nbp', {
+                svgColor: '#1c6d3c',
+            });
             try {
                 var daneKwota = document.getElementById('kwota').value;
                 var daneKurs = document.getElementById('kurs').value;
@@ -82,11 +95,27 @@
                 result += "Różnica kursu: " + (zaplataKwota - fakturaKwota).toFixed(2) + "zł\n";
 
                 (new Audio('beep.mp3')).play();
-                setTimeout(function () { alert(result) }, 1000)
+                setTimeout(function () { Notiflix.Loading.remove(); setTimeout(function () { alert(result); }, 400); }, 2000)
             } catch (error) {
+
                 (new Audio('beep.mp3')).play();
-                setTimeout(function () { alert("Błąd... błędne dane?\n\nSprawdź czy któraś z dat nie wskazuje na weekend"); }, 1000)
+                setTimeout(function () { Notiflix.Loading.remove(); setTimeout(function () { alert("Błąd... błędne dane?\nSprawdź czy któraś z dat nie wskazuje na weekend"); }, 400); }, 2000)
             }
+        }
+        function isWeekend(date = new Date()) {
+            return date.getDay() % 6 === 0;
+        }
+
+        function checkDate(e) {
+            var data = new Date(document.getElementById(e.target.id).value);
+            
+            if (!isWeekend(data)) return;
+
+            while (isWeekend(data)) data.setDate(data.getDate() - 1);
+
+            document.getElementById(e.target.id).value = data.toISOString().substring(0,10);
+
+            alert('Wskazano weekend. Data została zmieniona na ' + data.toISOString().split("T")[0]);
         }
     </script>
 </head>
@@ -96,128 +125,135 @@
         <div class="block">
             <span class="big-font">NBP</span>
             <br>
-            <span class="small-font">kalkulator różnic kursowych</span>
+            <span class="small-font">Kalkulator Różnic Kursowych</span>
         </div>
 
         <div class="block">
-            <span class="small-font">kwota (zł)</span>
-            <br>
-            <input class="custom-input" type="text" id="kwota" name="fname" value="100.00"><br>
+
+            <input class="custom-input" type="text" name="fname" value="PLN" disabled><input class="custom-input"
+                type="text" id="kwota" name="fname" value="100.00"><br>
         </div>
 
         <div class="block">
-            <span class="small-font">waluta</span>
-            <br>
-            <select class="custom-input" id="kurs">
-                <option value="AUD">
-                    AUD - dolar australijski</option>
-                <option value="BGN">
-                    BGN - lew (Bułgaria)</option>
-                <option value="BRL">
-                    BRL - real (Brazylia)</option>
-                <option value="CAD">
-                    CAD - dolar kanadyjski</option>
-                <option value="CHF">
-                    CHF - frank szwajcarski</option>
-                <option value="CLP">
-                    CLP - peso chilijskie</option>
-                <option value="CNY">
-                    CNY - yuan renminbi (Chiny)</option>
-                <option value="CYP">
-                    CYP - funt cypryjski</option>
-                <option value="CZK">
-                    CZK - korona czeska</option>
-                <option value="DKK">
-                    DKK - korona duńska</option>
-                <option value="EEK">
-                    EEK - korona estońska</option>
+
+            <input class="custom-input" type="text" name="fname" value="Waluta" disabled><select class="custom-input"
+                id="kurs">
                 <option value="EUR">
-                    EUR - euro</option>
-                <option value="GBP">
-                    GBP - funt szterling</option>
-                <option value="HKD">
-                    HKD - dolar Hongkongu</option>
-                <option value="HRK">
-                    HRK - kuna (Chorwacja)</option>
-                <option value="HUF">
-                    HUF - forint (Węgry)</option>
-                <option value="IDR">
-                    IDR - rupia indonezyjska</option>
-                <option value="ILS">
-                    ILS - nowy izraelski szekel</option>
-                <option value="INR">
-                    INR - rupia indyjska</option>
-                <option value="ISK">
-                    ISK - korona islandzka</option>
-                <option value="JPY">
-                    JPY - jen (Japonia)</option>
-                <option value="KRW">
-                    KRW - won południowokoreański</option>
-                <option value="LTL">
-                    LTL - lit litewski</option>
-                <option value="LVL">
-                    LVL - łat łotewski</option>
-                <option value="MTL">
-                    MTL - lira maltańska</option>
-                <option value="MXN">
-                    MXN - peso meksykańskie</option>
-                <option value="MYR">
-                    MYR - ringgit (Malezja)</option>
-                <option value="NOK">
-                    NOK - korona norweska</option>
-                <option value="NZD">
-                    NZD - dolar nowozelandzki</option>
-                <option value="PHP">
-                    PHP - peso filipińskie</option>
-                <option value="RON">
-                    RON - lej rumuński</option>
-                <option value="RUB">
-                    RUB - rubel rosyjski</option>
-                <option value="SEK">
-                    SEK - korona szwedzka</option>
-                <option value="SGD">
-                    SGD - dolar singapurski</option>
-                <option value="SIT">
-                    SIT - tolar słoweński</option>
-                <option value="SKK">
-                    SKK - korona słowacka</option>
-                <option value="THB">
-                    THB - bat (Tajlandia)</option>
-                <option value="TRY">
-                    TRY - lira turecka</option>
-                <option value="UAH">
-                    UAH - hrywna (Ukraina)</option>
+                    EUR</option>
                 <option value="USD">
-                    USD - dolar amerykański</option>
+                    USD</option>
+                <option value="CHF">
+                    CHF</option>
+                <option value="none">
+                    ------</option>
+                <option value="AUD">
+                    AUD</option>
+                <option value="BGN">
+                    BGN</option>
+                <option value="BRL">
+                    BRL</option>
+                <option value="CAD">
+                    CAD</option>
+                <option value="CLP">
+                    CLP</option>
+                <option value="CNY">
+                    CNY</option>
+                <option value="CYP">
+                    CYP</option>
+                <option value="CZK">
+                    CZK</option>
+                <option value="DKK">
+                    DKK</option>
+                <option value="EEK">
+                    EEK</option>
+                <option value="GBP">
+                    GBP</option>
+                <option value="HKD">
+                    HKD</option>
+                <option value="HRK">
+                    HRK</option>
+                <option value="HUF">
+                    HUF</option>
+                <option value="IDR">
+                    IDR</option>
+                <option value="ILS">
+                    ILS</option>
+                <option value="INR">
+                    INR</option>
+                <option value="ISK">
+                    ISK</option>
+                <option value="JPY">
+                    JPY</option>
+                <option value="KRW">
+                    KRW</option>
+                <option value="LTL">
+                    LTL</option>
+                <option value="LVL">
+                    LVL</option>
+                <option value="MTL">
+                    MTL</option>
+                <option value="MXN">
+                    MXN</option>
+                <option value="MYR">
+                    MYR</option>
+                <option value="NOK">
+                    NOK</option>
+                <option value="NZD">
+                    NZD</option>
+                <option value="PHP">
+                    PHP</option>
+                <option value="RON">
+                    RON</option>
+                <option value="RUB">
+                    RUB</option>
+                <option value="SEK">
+                    SEK</option>
+                <option value="SGD">
+                    SGD</option>
+                <option value="SIT">
+                    SIT</option>
+                <option value="SKK">
+                    SKK</option>
+                <option value="THB">
+                    THB</option>
+                <option value="TRY">
+                    TRY</option>
+                <option value="UAH">
+                    UAH</option>
+
                 <option value="XDR">
-                    XDR - SDR (MFW)</option>
+                    XDR</option>
                 <option value="ZAR">
-                    ZAR - rand (Republika Południowej Afryki)</option>
+                    ZAR</option>
             </select>
         </div>
 
         <div class="block">
-            <span class="small-font">faktura</span>
-            <br>
-            <input class="custom-input" type="date" id="fakturaDI" name="trip-start" value="2002-01-02"
-                min="2002-01-02">
+
+            <input class="custom-input" type="text" name="fname" value="Faktura" disabled><input class="custom-input"
+                type="date" id="fakturaDI" name="trip-start" value="2002-01-02" min="2002-01-02" onblur="checkDate(event);">
         </div>
 
         <div class="block">
-            <span class="small-font">zapłata</span>
-            <br>
-            <input class="custom-input" type="date" id="zaplataDI" name="trip-start" value="2002-01-02"
-                min="2002-01-02">
+
+            <input class="custom-input" type="text" name="fname" value="Zapłata" disabled><input class="custom-input"
+                type="date" id="zaplataDI" name="trip-start" value="2002-01-02" min="2002-01-02" onblur="checkDate(event);">
         </div>
 
         <div class="block">
-            <input class="custom-input" type="button" value="oblicz" onclick="oblicz()">
+            <input class="custom-input" style="width: 17em;" type="button" value="oblicz" onclick="oblicz()">
         </div>
     </div>
 
     <script>
+        function isWeekend(date = new Date()) {
+            return date.getDay() % 6 === 0;
+        }
+        
         var data = new Date();
+        
         data.setDate(data.getDate() - 1);
+        while (isWeekend(data)) data.setDate(data.getDate() - 1);
         aktualnaData = data.toISOString().split("T")[0]
         fakturaDI.max = aktualnaData;
         fakturaDI.value = aktualnaData;
