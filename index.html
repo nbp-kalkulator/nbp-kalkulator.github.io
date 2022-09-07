@@ -107,14 +107,14 @@
                 //result += "zaplata: " + daneZaplata + "\n";
                 //result += "\n";
                 result += "Faktura: \n Kurs: " + fakturaJson['rates'][0].mid.toFixed(4) + "zł\n Netto: " + (fakturaJson['rates'][0].mid * daneKwota).toFixed(2) + "zł\n Vat 23%: " + (fakturaJson['rates'][0].mid * daneKwota * 0.23).toFixed(2) + "zł\n Brutto: " + ((fakturaJson['rates'][0].mid * daneKwota * 0.23) + (fakturaJson['rates'][0].mid * daneKwota)).toFixed(2) + "zł\n " + fakturaJson['rates'][0].no + ", " + new Date(fakturaJson['rates'][0].effectiveDate).toLocaleDateString() + "\n";
-                result += "\n";
+                result += "\n\n";
                 result += "Zapłata: \n Kurs: " + zaplataJson['rates'][0].mid.toFixed(4) + "zł\n Kwota: " + (zaplataJson['rates'][0].mid * daneKwota).toFixed(2) + "zł\n " + zaplataJson['rates'][0].no + ", " + new Date(zaplataJson['rates'][0].effectiveDate).toLocaleDateString() + "\n";
-                result += "\n";
+                result += "\n\n";
 
                 var fakturaKwota = fakturaJson['rates'][0].mid * daneKwota;
                 var zaplataKwota = zaplataJson['rates'][0].mid * daneKwota;
 
-                result += "Różnica kursu: " + (zaplataKwota - fakturaKwota).toFixed(2) + "zł\n";
+                result += "Różnica kursu: " + (zaplataKwota - fakturaKwota).toFixed(2) + "zł\n\n";
 
                 (new Audio('beep.mp3')).play();
                 setTimeout(function () { Notiflix.Loading.remove(); setTimeout(function () { Swal.fire({ title: "Obliczenia", customClass: { popup: 'format-pre', confirmButton: 'cbutton'},buttonsStyling: false, toast: true, html: '<pre>' + result + '</pre>', confirmButtonText: "Ok" }) }, 400); }, 2000)
