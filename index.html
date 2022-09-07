@@ -65,17 +65,19 @@
         }
 
         .format-pre pre {
-            
+
             font-family: 'Lato';
             padding: 0.6em;
             font-size: 0.9em;
         }
-        .cbutton{
+
+        .cbutton {
             width: 100%;
             font-family: 'Lato';
             margin-top: 0.4em;
             padding: 0.6em;
         }
+
         table,
         th,
         td {
@@ -91,6 +93,7 @@
             width: 4em;
             background-color: rgba(245, 243, 243, 0.968);
         }
+
         .s2 {
             width: 8em;
             background-color: #1c6d3c;
@@ -118,14 +121,14 @@
                 zaplataRequest.send(null);
                 var zaplataJson = JSON.parse(zaplataRequest.responseText);
 
-                var result = '<table><tr><td class="s1">Faktura</td><td class="s2">$faktura_tag</td></tr><tr><td class="s1">Kurs</td><td class="s2">$faktura_kurs zł</td></tr><tr><td class="s1">Netto</td><td class="s2">$faktura_netto zł</td></tr><tr><td class="s1">VAT 23%</td><td class="s2">$faktura_vat23% zł</td></tr><tr><td class="s1">Brutto</td><td class="s2">$faktura_brutto zł</td></tr></table><br><table><tr><td class="s1">Zapłata</td><td class="s2">$zaplata_tag</td></tr><tr><td class="s1">Kurs</td><td class="s2">$zaplata_kurs zł</td></tr><tr><td class="s1">Kwota</td><td class="s2">$zaplata_kwota zł</td></tr></table><br><table><tr><td class="s1">Różnica</td><td class="s2" style="width: auto;">$roznica zł</td></tr></table>';
+                var result = '<table><tr><td class="s1">Faktura</td><td class="s2">$faktura_tag</td></tr><tr><td class="s1">Kurs</td><td class="s2">$faktura_kurs zł</td></tr><tr><td class="s1">Netto</td><td class="s2"  style="background-color: rgb(234, 152, 0);">$faktura_netto zł</td></tr><tr><td class="s1">VAT 23%</td><td class="s2">$faktura_vat23% zł</td></tr><tr><td class="s1">Brutto</td><td class="s2">$faktura_brutto zł</td></tr></table><br><table><tr><td class="s1" colspan="2">Zapłata</td></tr><tr><td class="s1">Kurs</td><td class="s2">$zaplata_kurs zł</td></tr><tr><td class="s1">Kwota</td><td class="s2"  style="background-color: rgb(234, 152, 0);">$zaplata_kwota zł</td></tr></table><br><table><tr><td class="s1">Różnica</td><td class="s2" style="width: auto;">$roznica zł</td></tr></table>';
 
                 result = result.replace('$faktura_tag', fakturaJson['rates'][0].no);
                 result = result.replace('$faktura_kurs', fakturaJson['rates'][0].mid.toFixed(4));
                 result = result.replace('$faktura_netto', (fakturaJson['rates'][0].mid * daneKwota).toFixed(2));
                 result = result.replace('$faktura_vat23%', (fakturaJson['rates'][0].mid * daneKwota * 0.23).toFixed(2));
-                result = result.replace('$faktura_brutto', ((fakturaJson['rates'][0].mid * daneKwota * 0.23) + (fakturaJson['rates'][0].mid * daneKwota)).toFixed(2));
-                
+                result = result.replace('$faktura_brutto', ((fakturaJson['rates'][0].mid * daneKwota * 0.23).toFixed(2) + (fakturaJson['rates'][0].mid * daneKwota).toFixed(2)));
+
                 result = result.replace('$zaplata_tag', zaplataJson['rates'][0].no);
                 result = result.replace('$zaplata_kurs', zaplataJson['rates'][0].mid.toFixed(4));
                 result = result.replace('$zaplata_kwota', (zaplataJson['rates'][0].mid * daneKwota).toFixed(2));
@@ -136,7 +139,7 @@
                 result = result.replace('$roznica', (zaplataKwota - fakturaKwota).toFixed(2));
 
                 (new Audio('beep.mp3')).play();
-                setTimeout(function () { Notiflix.Loading.remove(); setTimeout(function () { Swal.fire({ title: "Obliczenia", customClass: { popup: 'format-pre', confirmButton: 'cbutton'},buttonsStyling: false, toast: true, html: '<pre>' + result + '</pre>', confirmButtonText: "Ok" }) }, 400); }, 2000)
+                setTimeout(function () { Notiflix.Loading.remove(); setTimeout(function () { Swal.fire({ title: "Obliczenia", customClass: { popup: 'format-pre', confirmButton: 'cbutton' }, buttonsStyling: false, toast: true, html: '<pre>' + result + '</pre>', confirmButtonText: "Ok" }) }, 400); }, 2000)
             } catch (error) {
 
                 (new Audio('beep.mp3')).play();
@@ -171,7 +174,7 @@
 
         <div class="block">
 
-            <input class="custom-input" type="text" name="fname" value="PLN" disabled><input class="custom-input"
+            <input class="custom-input" type="text" name="fname" value="Kwota" disabled><input class="custom-input"
                 type="number" id="kwota" name="fname" value="100.00"><br>
         </div>
 
@@ -185,7 +188,9 @@
                     USD</option>
                 <option value="CHF">
                     CHF</option>
-                <option value="none">
+                <option value="GBP">
+                    GBP</option>
+                <option value="none" disabled>
                     ------</option>
                 <option value="AUD">
                     AUD</option>
@@ -207,8 +212,6 @@
                     DKK</option>
                 <option value="EEK">
                     EEK</option>
-                <option value="GBP">
-                    GBP</option>
                 <option value="HKD">
                     HKD</option>
                 <option value="HRK">
