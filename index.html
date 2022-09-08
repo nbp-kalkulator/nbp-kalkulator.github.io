@@ -129,7 +129,7 @@
                 result = result.replace('$faktura_vat23%', (fakturaJson['rates'][0].mid * daneKwota * 0.23).toFixed(2));
                 var a = (fakturaJson['rates'][0].mid * daneKwota * 0.23).toFixed(2);
                 var b = (fakturaJson['rates'][0].mid * daneKwota).toFixed(2);
-                result = result.replace('$faktura_brutto', parseFloat(a) + parseFloat(b));
+                result = result.replace('$faktura_brutto', (parseFloat(a) + parseFloat(b)).toFixed(2));
                 
                 result = result.replace('$zaplata_tag', zaplataJson['rates'][0].no);
                 result = result.replace('$zaplata_kurs', zaplataJson['rates'][0].mid.toFixed(4));
