@@ -11,7 +11,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <style>
         body {
             font-family: 'Lato';
@@ -102,9 +101,6 @@
         }
     </style>
     <script>
-        function round(value, decimals) {
-            return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
-        }
         function oblicz() {
             Notiflix.Loading.standard('pobieranie danych z api.nbp', {
                 svgColor: '#1c6d3c',
@@ -128,21 +124,21 @@
                 var result = '<table><tr><td class="s1">Faktura</td><td class="s2">$faktura_tag</td></tr><tr><td class="s1">Kurs</td><td class="s2">$faktura_kurs zł</td></tr><tr><td class="s1">Netto</td><td class="s2"  style="background-color: rgb(234, 152, 0);">$faktura_netto zł</td></tr><tr><td class="s1">VAT 23%</td><td class="s2">$faktura_vat23% zł</td></tr><tr><td class="s1">Brutto</td><td class="s2">$faktura_brutto zł</td></tr></table><br><table><tr><td class="s1" colspan="2">Zapłata</td></tr><tr><td class="s1">Kurs</td><td class="s2">$zaplata_kurs zł</td></tr><tr><td class="s1">Kwota</td><td class="s2"  style="background-color: rgb(234, 152, 0);">$zaplata_kwota zł</td></tr></table><br><table><tr><td class="s1">Różnica</td><td class="s2" style="width: auto;">$roznica zł</td></tr></table>';
 
                 result = result.replace('$faktura_tag', fakturaJson['rates'][0].no);
-                result = result.replace('$faktura_kurs', round(fakturaJson['rates'][0].mid, 4).toFixed(4));
-                result = result.replace('$faktura_netto', round(fakturaJson['rates'][0].mid * daneKwota, 2).toFixed(2));
-                result = result.replace('$faktura_vat23%', round(fakturaJson['rates'][0].mid * daneKwota * 0.23, 2).toFixed(2));
+                result = result.replace('$faktura_kurs', fakturaJson['rates'][0].mid.toFixed(4));
+                result = result.replace('$faktura_netto', (fakturaJson['rates'][0].mid * daneKwota).toFixed(2));
+                result = result.replace('$faktura_vat23%', ((fakturaJson['rates'][0].mid * daneKwota).toFixed(2) * 0.23).toFixed(2));
                 var a = (fakturaJson['rates'][0].mid * daneKwota * 0.23).toFixed(2);
                 var b = (fakturaJson['rates'][0].mid * daneKwota).toFixed(2);
-                result = result.replace('$faktura_brutto', round(parseFloat(a) + parseFloat(b), 2).toFixed(2));
-
+                result = result.replace('$faktura_brutto', (parseFloat(a) + parseFloat(b)).toFixed(2));
+                
                 result = result.replace('$zaplata_tag', zaplataJson['rates'][0].no);
-                result = result.replace('$zaplata_kurs', round(zaplataJson['rates'][0].mid, 4).toFixed(4));
-                result = result.replace('$zaplata_kwota', round(zaplataJson['rates'][0].mid * daneKwota, 2).toFixed(2));
+                result = result.replace('$zaplata_kurs', zaplataJson['rates'][0].mid.toFixed(4));
+                result = result.replace('$zaplata_kwota', (zaplataJson['rates'][0].mid * daneKwota).toFixed(2));
 
                 var fakturaKwota = fakturaJson['rates'][0].mid * daneKwota;
                 var zaplataKwota = zaplataJson['rates'][0].mid * daneKwota;
 
-                result = result.replace('$roznica', round(zaplataKwota - fakturaKwota, 2).toFixed(2));
+                result = result.replace('$roznica', (zaplataKwota - fakturaKwota).toFixed(2));
 
                 (new Audio('beep.mp3')).play();
                 setTimeout(function () { Notiflix.Loading.remove(); setTimeout(function () { Swal.fire({ title: "Obliczenia", customClass: { popup: 'format-pre', confirmButton: 'cbutton' }, buttonsStyling: false, toast: true, html: '<pre>' + result + '</pre>', confirmButtonText: "Ok" }) }, 400); }, 2000)
