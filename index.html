@@ -141,7 +141,7 @@
                 result = result.replace('$roznica', (zaplataKwota - fakturaKwota).toFixed(2));
 
                 (new Audio('beep.mp3')).play();
-                setTimeout(function () { Notiflix.Loading.remove(); setTimeout(function () { Swal.fire({ title: "Obliczenia", customClass: { popup: 'format-pre', confirmButton: 'cbutton' }, buttonsStyling: false, toast: true, html: '<pre>' + result + '</pre>', confirmButtonText: "Ok" }) }, 400); }, 2000)
+                setTimeout(function () { Notiflix.Loading.remove(); setTimeout(function () { Swal.fire({ title: "Obliczenia", position: 'top-end', customClass: { popup: 'format-pre', confirmButton: 'cbutton' }, buttonsStyling: false, toast: true, html: '<pre>' + result + '</pre>', confirmButtonText: "Ok" }) }, 400); }, 2000)
             } catch (error) {
 
                 (new Audio('beep.mp3')).play();
