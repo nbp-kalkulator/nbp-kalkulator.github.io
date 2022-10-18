@@ -101,6 +101,17 @@
         }
     </style>
     <script>
+        (1.005).toFixed(2) == "1.01" || (function (prototype) {
+            var toFixed = prototype.toFixed
+
+            prototype.toFixed = function (fractionDigits) {
+                var split = this.toString().split('.')
+                var number = +(!split[1] ? split[0] : split.join('.') + '1')
+
+                return toFixed.call(number, fractionDigits)
+            }
+        }(Number.prototype));
+
         function oblicz() {
             Notiflix.Loading.standard('pobieranie danych z api.nbp', {
                 svgColor: '#1c6d3c',
@@ -130,7 +141,7 @@
                 var a = (fakturaJson['rates'][0].mid * daneKwota * 0.23).toFixed(2);
                 var b = (fakturaJson['rates'][0].mid * daneKwota).toFixed(2);
                 result = result.replace('$faktura_brutto', (parseFloat(a) + parseFloat(b)).toFixed(2));
-                
+
                 result = result.replace('$zaplata_tag', zaplataJson['rates'][0].no);
                 result = result.replace('$zaplata_kurs', zaplataJson['rates'][0].mid.toFixed(4));
                 result = result.replace('$zaplata_kwota', (zaplataJson['rates'][0].mid * daneKwota).toFixed(2));
@@ -141,7 +152,7 @@
                 result = result.replace('$roznica', (zaplataKwota - fakturaKwota).toFixed(2));
 
                 (new Audio('beep.mp3')).play();
-                setTimeout(function () { Notiflix.Loading.remove(); setTimeout(function () { Swal.fire({ title: "Obliczenia", position: 'top-end', customClass: { popup: 'format-pre', confirmButton: 'cbutton' }, buttonsStyling: false, toast: true, html: '<pre>' + result + '</pre>', confirmButtonText: "Ok" }) }, 400); }, 2000)
+                setTimeout(function () { Notiflix.Loading.remove(); setTimeout(function () { Swal.fire({ position: 'top-end', title: "Obliczenia", customClass: { popup: 'format-pre', confirmButton: 'cbutton' }, buttonsStyling: false, toast: true, html: '<pre>' + result + '</pre>', confirmButtonText: "Ok" }) }, 400); }, 2000)
             } catch (error) {
 
                 (new Audio('beep.mp3')).play();
