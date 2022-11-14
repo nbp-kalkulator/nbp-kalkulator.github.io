@@ -125,21 +125,21 @@
                 var result = '<table><tr><td class="s1">Faktura</td><td class="s2">$faktura_tag</td></tr><tr><td class="s1">Kurs</td><td class="s2">$faktura_kurs zł</td></tr><tr><td class="s1">Netto</td><td class="s2"  style="background-color: rgb(234, 152, 0);">$faktura_netto zł</td></tr><tr><td class="s1">VAT 23%</td><td class="s2">$faktura_vat23% zł</td></tr><tr><td class="s1">Brutto</td><td class="s2">$faktura_brutto zł</td></tr></table><br><table><tr><td class="s1" colspan="2">Zapłata</td></tr><tr><td class="s1">Kurs</td><td class="s2">$zaplata_kurs zł</td></tr><tr><td class="s1">Kwota</td><td class="s2"  style="background-color: rgb(234, 152, 0);">$zaplata_kwota zł</td></tr></table><br><table><tr><td class="s1">Różnica</td><td class="s2" style="width: auto;">$roznica zł</td></tr></table>';
 
                 result = result.replace('$faktura_tag', fakturaJson['rates'][0].no);
-                result = result.replace('$faktura_kurs', math.round(fakturaJson['rates'][0].mid, 4));
-                result = result.replace('$faktura_netto', (math.round(fakturaJson['rates'][0].mid * daneKwota, 2)));
-                result = result.replace('$faktura_vat23%', math.round((math.round((fakturaJson['rates'][0].mid * daneKwota), 2) * 0.23), 2));
-                var a = math.round((fakturaJson['rates'][0].mid * daneKwota * 0.23), 2);
-                var b = math.round((fakturaJson['rates'][0].mid * daneKwota), 2);
-                result = result.replace('$faktura_brutto', math.round((parseFloat(a) + parseFloat(b)), 2));
+                result = result.replace('$faktura_kurs', math.round(fakturaJson['rates'][0].mid, 4).toFixed(5).slice(0, -1));
+                result = result.replace('$faktura_netto', (math.round(fakturaJson['rates'][0].mid * daneKwota, 2)).toFixed(3).slice(0, -1));
+                result = result.replace('$faktura_vat23%', math.round((math.round((fakturaJson['rates'][0].mid * daneKwota), 2) * 0.23), 2).toFixed(3).slice(0, -1));
+                var a = math.round((fakturaJson['rates'][0].mid * daneKwota * 0.23), 2).toFixed(3).slice(0, -1);
+                var b = math.round((fakturaJson['rates'][0].mid * daneKwota), 2).toFixed(3).slice(0, -1);
+                result = result.replace('$faktura_brutto', math.round((parseFloat(a) + parseFloat(b)), 2).toFixed(3).slice(0, -1));
 
                 result = result.replace('$zaplata_tag', zaplataJson['rates'][0].no);
-                result = result.replace('$zaplata_kurs', math.round(zaplataJson['rates'][0].mid, 4));
-                result = result.replace('$zaplata_kwota', math.round((zaplataJson['rates'][0].mid * daneKwota), 2));
+                result = result.replace('$zaplata_kurs', math.round(zaplataJson['rates'][0].mid, 4).toFixed(5).slice(0, -1));
+                result = result.replace('$zaplata_kwota', math.round((zaplataJson['rates'][0].mid * daneKwota), 2).toFixed(3).slice(0, -1));
 
                 var fakturaKwota = math.round(fakturaJson['rates'][0].mid * daneKwota, 2);
                 var zaplataKwota = math.round(zaplataJson['rates'][0].mid * daneKwota, 2);
 
-                result = result.replace('$roznica', math.round((zaplataKwota - fakturaKwota), 2));
+                result = result.replace('$roznica', math.round((zaplataKwota - fakturaKwota), 2).toFixed(3).slice(0, -1));
 
                 (new Audio('beep.mp3')).play();
                 setTimeout(function () { Notiflix.Loading.remove(); setTimeout(function () { Swal.fire({ position: 'top-end', title: "Obliczenia", customClass: { popup: 'format-pre', confirmButton: 'cbutton' }, buttonsStyling: false, toast: true, html: '<pre>' + result + '</pre>', confirmButtonText: "Ok" }) }, 400); }, 2000)
