@@ -123,7 +123,7 @@
                 zaplataRequest.send(null);
                 var zaplataJson = JSON.parse(zaplataRequest.responseText);
 
-                var result = '<table> <tr> <td></td> <td class="s1">Kwota</td> <td class="s2">$kwota_f</td> </tr> <tr> <td class="s1" colspan="3">Faktura</td> </tr> <tr> <td>$data_faktura</td> <td class="s1">Tabela</td> <td class="s2">$faktura_tag</td> </tr> <tr> <td></td> <td class="s1">Kurs</td> <td class="s2">$faktura_kurs</td> </tr> <tr> <td></td> <td class="s1">Z dnia</td> <td class="s2">$data_faktura_fx</td> </tr> <tr> <td></td> <td></td> <td></td> </tr> <tr> <td></td> <td class="s1">Netto</td> <td class="s2" style="background-color: orange; opacity: 0.85;">$faktura_netto pln</td> </tr> <tr> <td></td> <td class="s1">VAT 23%</td> <td class="s2" style="background-color: orange; opacity: 0.6;">$faktura_vat23% pln</td> </tr> <tr> <td></td> <td class="s1">Brutto</td> <td class="s2" style="background-color: orange; opacity: 0.6;">$faktura_brutto pln</td> </tr> <tr> <td></td> <td></td> <td></td> </tr> <tr> <td class="s1" colspan="3">Zapłata</td> </tr> <tr> <td>$data_zaplata</td> <td class="s1">Kurs</td> <td class="s2">$zaplata_kurs</td> </tr> <tr> <td></td> <td class="s1">Z dnia</td> <td class="s2">$data_zaplata_fx</td> </tr> <tr> <td></td> <td class="s1">Wartość</td> <td class="s2" style="background-color: orange; opacity: 0.85;">$zaplata_kwota pln</td> </tr> <tr style="background-color: aliceblue;"> <td class="s1" colspan="2">Różnica kursowa</td> <td class="s2" style="background-color: orange; opacity: 1;">$roznica pln</td> </tr>';
+                var result = '<table> <tr> <td></td> <td class="s1">Kwota</td> <td class="s2">$kwota_f</td> </tr> <tr> <td class="s1" colspan="3">Faktura</td> </tr> <tr> <td>$data_faktura</td> <td class="s1">Tabela</td> <td class="s2">$faktura_tag</td> </tr> <tr> <td></td> <td class="s1">Kurs</td> <td class="s2">$faktura_kurs</td> </tr> <tr> <td></td> <td class="s1">Z dnia</td> <td class="s2">$data_faktura_fx</td> </tr> <tr> <td></td> <td></td> <td></td> </tr> <tr> <td></td> <td class="s1">Netto</td> <td class="s2" style="background-color: orange; opacity: 0.85;">$faktura_netto pln</td> </tr> <tr> <td></td> <td class="s1">VAT 23%</td> <td class="s2" style="background-color: orange; opacity: 0.6;">$faktura_vat23% pln</td> </tr> <tr> <td></td> <td class="s1">Brutto</td> <td class="s2" style="background-color: orange; opacity: 0.6;">$faktura_brutto pln</td> </tr> <tr> <td></td> <td></td> <td></td> </tr> <tr> <td class="s1" colspan="3">Zapłata</td> </tr> <tr> <td>$data_zaplata</td> <td class="s1">Kurs</td> <td class="s2">$zaplata_kurs</td> </tr> <tr> <td></td> <td class="s1">Z dnia</td> <td class="s2">$data_zaplata_fx</td> </tr> <tr> <td></td> <td class="s1">Wartość</td> <td class="s2" style="background-color: orange; opacity: 0.85;">$zaplata_kwota pln</td> </tr> <tr style="background-color: aliceblue;"> <td class="s1" colspan="2">Różnica kursowa</td> <td class="s2" style="background-color: dodgerblue; opacity: 1;">$roznica pln</td> </tr>';
 
                 result = result.replace('$kwota_f', daneKwota + " " + daneKurs.toLowerCase());
                 result = result.replace('$data_faktura', toddmmyyyy(new Date(document.getElementById('fakturaDI').value)));
@@ -162,6 +162,8 @@
 
         function checkDate(d) {
             var data = new Date(d);
+
+            data.setDate(data.getDate() - 1);
 
             if (!isWeekend(data)) return data.toISOString().substring(0, 10);
 
