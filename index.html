@@ -82,6 +82,7 @@
         table,
         th,
         td {
+            
             border: 0.3em solid white;
             border-collapse: collapse;
         }
@@ -109,8 +110,8 @@
             try {
                 var daneKwota = document.getElementById('kwota').value;
                 var daneKurs = document.getElementById('kurs').value;
-                var daneFaktura = document.getElementById('fakturaDI').value;
-                var daneZaplata = document.getElementById('zaplataDI').value;
+                var daneFaktura = checkDate(document.getElementById('fakturaDI').value);
+                var daneZaplata = checkDate(document.getElementById('zaplataDI').value);
 
                 var fakturaRequest = new XMLHttpRequest();
                 fakturaRequest.open("GET", 'https://api.nbp.pl/api/exchangerates/rates/a/' + daneKurs + '/' + daneFaktura, false);
@@ -122,7 +123,13 @@
                 zaplataRequest.send(null);
                 var zaplataJson = JSON.parse(zaplataRequest.responseText);
 
-                var result = '<table><tr><td class="s1">Faktura</td><td class="s2">$faktura_tag</td></tr><tr><td class="s1">Kurs</td><td class="s2">$faktura_kurs zł</td></tr><tr><td class="s1">Netto</td><td class="s2"  style="background-color: rgb(234, 152, 0);">$faktura_netto zł</td></tr><tr><td class="s1">VAT 23%</td><td class="s2">$faktura_vat23% zł</td></tr><tr><td class="s1">Brutto</td><td class="s2">$faktura_brutto zł</td></tr></table><br><table><tr><td class="s1" colspan="2">Zapłata</td></tr><tr><td class="s1">Kurs</td><td class="s2">$zaplata_kurs zł</td></tr><tr><td class="s1">Kwota</td><td class="s2"  style="background-color: rgb(234, 152, 0);">$zaplata_kwota zł</td></tr></table><br><table><tr><td class="s1">Różnica</td><td class="s2" style="width: auto;">$roznica zł</td></tr></table>';
+                var result = '<table> <tr> <td></td> <td class="s1">Kwota</td> <td class="s2">$kwota_f</td> </tr> <tr> <td class="s1" colspan="3">Faktura</td> </tr> <tr> <td>$data_faktura</td> <td class="s1">Tabela</td> <td class="s2">$faktura_tag</td> </tr> <tr> <td></td> <td class="s1">Kurs</td> <td class="s2">$faktura_kurs</td> </tr> <tr> <td></td> <td class="s1">Z dnia</td> <td class="s2">$data_faktura_fx</td> </tr> <tr> <td></td> <td></td> <td></td> </tr> <tr> <td></td> <td class="s1">Netto</td> <td class="s2" style="background-color: orange; opacity: 0.85;">$faktura_netto pln</td> </tr> <tr> <td></td> <td class="s1">VAT 23%</td> <td class="s2" style="background-color: orange; opacity: 0.6;">$faktura_vat23% pln</td> </tr> <tr> <td></td> <td class="s1">Brutto</td> <td class="s2" style="background-color: orange; opacity: 0.6;">$faktura_brutto pln</td> </tr> <tr> <td></td> <td></td> <td></td> </tr> <tr> <td class="s1" colspan="3">Zapłata</td> </tr> <tr> <td>$data_zaplata</td> <td class="s1">Kurs</td> <td class="s2">$zaplata_kurs</td> </tr> <tr> <td></td> <td class="s1">Z dnia</td> <td class="s2">$data_zaplata_fx</td> </tr> <tr> <td></td> <td class="s1">Wartość</td> <td class="s2" style="background-color: orange; opacity: 0.85;">$zaplata_kwota pln</td> </tr> <tr style="background-color: aliceblue;"> <td class="s1" colspan="2">Różnica kursowa</td> <td class="s2" style="background-color: orange; opacity: 1;">$roznica pln</td> </tr>';
+
+                result = result.replace('$kwota_f', daneKwota + " " + daneKurs.toLowerCase());
+                result = result.replace('$data_faktura', toddmmyyyy(new Date(document.getElementById('fakturaDI').value)));
+                result = result.replace('$data_faktura_fx', toddmmyyyy(new Date(daneFaktura)));
+                result = result.replace('$data_zaplata', toddmmyyyy(new Date(document.getElementById('zaplataDI').value)));
+                result = result.replace('$data_zaplata_fx', toddmmyyyy(new Date(daneZaplata)));
 
                 result = result.replace('$faktura_tag', fakturaJson['rates'][0].no);
                 result = result.replace('$faktura_kurs', math.round(fakturaJson['rates'][0].mid, 4).toFixed(5).slice(0, -1));
@@ -142,7 +149,7 @@
                 result = result.replace('$roznica', math.round((zaplataKwota - fakturaKwota), 2).toFixed(3).slice(0, -1));
 
                 (new Audio('beep.mp3')).play();
-                setTimeout(function () { Notiflix.Loading.remove(); setTimeout(function () { Swal.fire({ position: 'top-end', title: "Obliczenia", customClass: { popup: 'format-pre', confirmButton: 'cbutton' }, buttonsStyling: false, toast: true, html: '<pre>' + result + '</pre>', confirmButtonText: "Ok" }) }, 400); }, 2000)
+                setTimeout(function () { Notiflix.Loading.remove(); setTimeout(function () { Swal.fire({ width: 'auto', title: "Obliczenia", customClass: { popup: 'format-pre', confirmButton: 'cbutton' }, buttonsStyling: false, toast: true, html: '<pre>' + result + '</pre>', confirmButtonText: "Ok" }) }, 400); }, 2000)
             } catch (error) {
 
                 (new Audio('beep.mp3')).play();
@@ -153,16 +160,21 @@
             return date.getDay() % 6 === 0;
         }
 
-        function checkDate(e) {
-            var data = new Date(document.getElementById(e.target.id).value);
+        function checkDate(d) {
+            var data = new Date(d);
 
-            if (!isWeekend(data)) return;
+            if (!isWeekend(data)) return data.toISOString().substring(0, 10);
 
             while (isWeekend(data)) data.setDate(data.getDate() - 1);
 
-            document.getElementById(e.target.id).value = data.toISOString().substring(0, 10);
+            return data.toISOString().substring(0, 10);
+        }
+        function toddmmyyyy(date) {
+            let year = date.getFullYear();
+            let month = (1 + date.getMonth()).toString().padStart(2, '0');
+            let day = date.getDate().toString().padStart(2, '0');
 
-            alert('Wskazano weekend. Data została zmieniona na ' + data.toISOString().split("T")[0]);
+            return day + '/' + month + '/' + year;
         }
     </script>
 </head>
@@ -278,15 +290,13 @@
         <div class="block">
 
             <input class="custom-input" type="text" name="fname" value="Faktura" disabled><input class="custom-input"
-                type="date" id="fakturaDI" name="trip-start" value="2002-01-02" min="2002-01-02"
-                onblur="checkDate(event);">
+                type="date" id="fakturaDI" name="trip-start" value="2002-01-02" min="2002-01-02" onblur="">
         </div>
 
         <div class="block">
 
             <input class="custom-input" type="text" name="fname" value="Zapłata" disabled><input class="custom-input"
-                type="date" id="zaplataDI" name="trip-start" value="2002-01-02" min="2002-01-02"
-                onblur="checkDate(event);">
+                type="date" id="zaplataDI" name="trip-start" value="2002-01-02" min="2002-01-02" onblur="">
         </div>
 
         <div class="block">
@@ -304,8 +314,8 @@
         fakturaDI.max = data.toISOString().split("T")[0];
         zaplataDI.max = data.toISOString().split("T")[0];
 
-        data.setDate(data.getDate() - 1);
-        while (isWeekend(data)) data.setDate(data.getDate() - 1);
+        //data.setDate(data.getDate() - 1);
+        //while (isWeekend(data)) data.setDate(data.getDate() - 1);
         aktualnaData = data.toISOString().split("T")[0]
         fakturaDI.value = aktualnaData;
         zaplataDI.value = aktualnaData;
