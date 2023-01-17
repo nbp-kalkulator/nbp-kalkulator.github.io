@@ -122,18 +122,20 @@
                 var daneKurs = document.getElementById('kurs').value;
                 var daneFaktura = checkDate(document.getElementById('fakturaDI').value);
                 var daneZaplata = checkDate(document.getElementById('zaplataDI').value);
-
+                
                 var fakturaRequest = new XMLHttpRequest();
                 fakturaRequest.open("GET", 'https://api.nbp.pl/api/exchangerates/rates/a/' + daneKurs + '/' + daneFaktura, false);
                 fakturaRequest.send(null);
                 var fakturaJson = JSON.parse(fakturaRequest.responseText);
-
+                
                 var zaplataRequest = new XMLHttpRequest();
                 zaplataRequest.open("GET", 'https://api.nbp.pl/api/exchangerates/rates/a/' + daneKurs + '/' + daneZaplata, false);
                 zaplataRequest.send(null);
                 var zaplataJson = JSON.parse(zaplataRequest.responseText);
 
                 var result = '<table> <tr> <td class="" colspan="2" style="font-weight: 600;">Kwota</td> <td class="" style="font-weight: 700;">$kwota_f</td> </tr> <tr> <td class="s1" colspan="3">Faktura</td> </tr> <tr> <td>$data_faktura</td> <td class="s1">Tabela</td> <td class="s2">$faktura_tag</td> </tr> <tr> <td></td> <td class="s1">Kurs</td> <td class="s2">$faktura_kurs</td> </tr> <tr> <td></td> <td class="s1">Z dnia</td> <td class="s2">$data_faktura_fx</td> </tr> <tr> <td></td> <td></td> <td></td> </tr> <tr> <td></td> <td class="s1">Netto</td> <td class="s2" style="background-color: orange; opacity: 1; outline: 0.1em solid black; outline-offset: -0.1em;"> $faktura_netto pln</td> </tr> <tr> <td></td> <td class="s1">VAT 23%</td> <td class="s2" style="background-color: orange; opacity: 1;">$faktura_vat23% pln</td> </tr> <tr> <td></td> <td class="s1">Brutto</td> <td class="s2" style="background-color: orange; opacity: 1;">$faktura_brutto pln</td> </tr> <tr> <td></td> <td></td> <td></td> </tr> <tr> <td class="s1" colspan="3">Zapłata</td> </tr> <tr> <td>$data_zaplata</td> <td class="s1">Kurs</td> <td class="s2">$zaplata_kurs</td> </tr> <tr> <td></td> <td class="s1">Z dnia</td> <td class="s2">$data_zaplata_fx</td> </tr> <tr> <td></td> <td class="s1">Wartość</td> <td class="s2" style="background-color: orange; opacity: 1; outline: 0.1em solid black; outline-offset: -0.1em;"> $zaplata_kwota pln</td> <tr> <td></td> <td></td> <td></td> </tr> </tr> <tr style="background-color: aliceblue;"> <td class="s1" colspan="2">Różnica kursowa</td> <td class="s2" style="background-color: rgb(249, 165, 10); opacity: 1; color:black; outline: 0.1em solid black; outline-offset: -0.1em;"> $roznica pln</td> </tr> </table>';
+
+                //parseFloat(number).toPrecision(12)
 
                 result = result.replace('$kwota_f', daneKwota + " " + daneKurs.toLowerCase());
                 result = result.replace('$data_faktura', toddmmyyyy(new Date(document.getElementById('fakturaDI').value)));
@@ -143,18 +145,20 @@
 
                 result = result.replace('$faktura_tag', fakturaJson['rates'][0].no);
                 result = result.replace('$faktura_kurs', math.round(fakturaJson['rates'][0].mid, 4).toFixed(5).slice(0, -1));
-                result = result.replace('$faktura_netto', (math.round(fakturaJson['rates'][0].mid * daneKwota, 2)).toFixed(3).slice(0, -1));
-                result = result.replace('$faktura_vat23%', math.round((math.round((fakturaJson['rates'][0].mid * daneKwota), 2) * 0.23), 2).toFixed(3).slice(0, -1));
-                var a = math.round((fakturaJson['rates'][0].mid * daneKwota * 0.23), 2).toFixed(3).slice(0, -1);
-                var b = math.round((fakturaJson['rates'][0].mid * daneKwota), 2).toFixed(3).slice(0, -1);
+                result = result.replace('$faktura_netto', math.round(parseFloat(fakturaJson['rates'][0].mid * daneKwota).toPrecision(12), 2).toFixed(3).slice(0, -1));
+                result = result.replace('$faktura_vat23%', math.round((math.round((parseFloat(fakturaJson['rates'][0].mid * daneKwota).toPrecision(12)), 2) * 0.23), 2).toFixed(3).slice(0, -1));
+                var a = math.round((fakturaJson['rates'][0].mid * daneKwota), 2);
+                a = math.round(a * 0.23, 2);
+                var b = math.round((fakturaJson['rates'][0].mid * daneKwota), 2);
+                
                 result = result.replace('$faktura_brutto', math.round((parseFloat(a) + parseFloat(b)), 2).toFixed(3).slice(0, -1));
 
                 result = result.replace('$zaplata_tag', zaplataJson['rates'][0].no);
                 result = result.replace('$zaplata_kurs', math.round(zaplataJson['rates'][0].mid, 4).toFixed(5).slice(0, -1));
-                result = result.replace('$zaplata_kwota', math.round((zaplataJson['rates'][0].mid * daneKwota), 2).toFixed(3).slice(0, -1));
+                result = result.replace('$zaplata_kwota', math.round((parseFloat(zaplataJson['rates'][0].mid * daneKwota).toPrecision(12)), 2).toFixed(3).slice(0, -1));
 
-                var fakturaKwota = math.round(fakturaJson['rates'][0].mid * daneKwota, 2);
-                var zaplataKwota = math.round(zaplataJson['rates'][0].mid * daneKwota, 2);
+                var fakturaKwota = math.round(parseFloat(fakturaJson['rates'][0].mid * daneKwota).toPrecision(12), 2);
+                var zaplataKwota = math.round(parseFloat(zaplataJson['rates'][0].mid * daneKwota).toPrecision(12), 2);
 
                 result = result.replace('$roznica', math.round((zaplataKwota - fakturaKwota), 2).toFixed(3).slice(0, -1));
 
@@ -328,7 +332,7 @@
 
         //data.setDate(data.getDate() - 1);
         //while (isWeekend(data)) data.setDate(data.getDate() - 1);
-        aktualnaData = data.toISOString().split("T")[0]
+        aktualnaData = data.toISOString().split("T")[0];
         fakturaDI.value = aktualnaData;
         zaplataDI.value = aktualnaData;
     </script>
